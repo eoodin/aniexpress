@@ -19,6 +19,8 @@ import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import { mailFolderListItems, otherMailFolderListItems } from './tileData';
 
+import Editor from './Editor';
+
 const drawerWidth = 240;
 
 const styles = theme => ({
@@ -79,10 +81,15 @@ const styles = theme => ({
         padding: '0 8px',
         ...theme.mixins.toolbar,
     },
+    editor: {
+        height: '100%'
+    },
     content: {
         flexGrow: 1,
         backgroundColor: theme.palette.background.default,
-        padding: theme.spacing.unit * 3,
+        padding: 0,
+        display: 'flex',
+        flexDirection: 'column'
     },
 });
 
@@ -125,9 +132,7 @@ class TheApp extends Component {
                         >
                             <MenuIcon />
                         </IconButton>
-                        <Typography variant="title" color="inherit" noWrap>
-                        AniExpress
-            </Typography>
+                        <Typography variant="title" color="inherit" noWrap>AniExpress</Typography>
                     </Toolbar>
                 </AppBar>
                 <Drawer
@@ -149,7 +154,7 @@ class TheApp extends Component {
                 </Drawer>
                 <main className={classes.content}>
                     <div className={classes.toolbar} />
-                    <Typography noWrap>{'You think water moves fast? You should see ice.'}</Typography>
+                    <Editor className={classes.editor}/>
                 </main>
             </div>
         );
