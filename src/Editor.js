@@ -46,7 +46,7 @@ export default class Editor extends Component {
 
         const data = [12, 4, 6, 9, 7, 10];
         this.svg = d3.select(".Editor").append("svg")
-                     .attr("width", 700).attr("height", 300);
+                     .attr("width", 1400).attr("height", 600);
         this.drawBox(components[0].space, components[0].surface)
     }
 
@@ -55,24 +55,39 @@ export default class Editor extends Component {
     }
 
     drawBox(space, surface) {
-        const origin = {x: 200, y: 140};
-        const zuv = {x: -0.5, y: -0.5};
+        const origin = {x: 400, y: 300};
+        const v = {x: -0.5, y: -0.5};
         let {from, to} = space;
         let parallelograms = [
             [ // back
-                {x: from.x + from.z * zuv.x, y: from.y + from.z * zuv.y},
-                {x: to.x + from.z * zuv.x, y: from.y + from.z * zuv.y},
-                {x: to.x + from.z * zuv.x, y: to.y + from.z * zuv.y},
-                {x: from.x + from.z * zuv.x, y: to.y + from.z * zuv.y}
+                {x: from.x + from.z * v.x, y: from.y + from.z * v.y},
+                {x: to.x + from.z * v.x, y: from.y + from.z * v.y},
+                {x: to.x + from.z * v.x, y: to.y + from.z * v.y},
+                {x: from.x + from.z * v.x, y: to.y + from.z * v.y}
             ],
             [ // bottom
-                {x: from.x + from.z * zuv.x, y: from.y + from.z * zuv.y},
-                {x: to.x + from.z * zuv.x, y: from.y + from.z * zuv.y},
-                {x: to.x + from.z * zuv.x, y: to.y + from.z * zuv.y},
-                {x: from.x + from.z * zuv.x, y: to.y + from.z * zuv.y}
-            ]
+                {x: from.x + from.z * v.x, y: from.z * v.y},
+                {x: to.x + from.z * v.x, y: from.z * v.y},
+                {x: to.x + to.z * v.x, y: to.z * v.y},
+                {x: from.x + to.z * v.x, y: to.z * v.y}
+            ],
+            [ // front
+                {x: from.x + to.z * v.x, y: from.y + to.z * v.y},
+                {x: to.x + to.z * v.x, y: from.y + to.z * v.y},
+                {x: to.x + to.z * v.x, y: to.y + to.z * v.y},
+                {x: from.x + to.z * v.x, y: to.y + to.z * v.y}
+            ],
+            [// left
+                {x: from.x + to.z * v.x, y: from.y + to.z * v.y},
+                {x: to.x + to.z * v.x, y: from.y + to.z * v.y},
+                {x: to.x + to.z * v.x, y: to.y + to.z * v.y},
+                {x: from.x + to.z * v.x, y: to.y + to.z * v.y}
+            ],
         ];
 
+        // reverse for to bottom up
+        parallelograms = parallelograms.map(pl => pl.map(p => ({x: p.x, y: (p.y * -1)})));
+        console.log(parallelograms);
         this.svg.selectAll("polygon")
             .data(parallelograms)
             .enter()
