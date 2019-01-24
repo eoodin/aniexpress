@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import store from './store';
-import messenger from './services/messenger';
+// import messenger from './services/messenger';
 import { bindActionCreators } from 'redux';
 import { connect, Provider } from 'react-redux';
 
@@ -107,11 +107,11 @@ class TheApp extends Component {
     };
 
     componentDidMount() {
-        messenger.startWatch();
+        // messenger.startWatch();
     }
 
     componentWillUnmount() {
-        messenger.stopWatch();
+        // messenger.stopWatch();
     }
 
     render() {

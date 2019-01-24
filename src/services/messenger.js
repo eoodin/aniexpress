@@ -11,10 +11,6 @@ class Messenger {
         this.listeners = [];
     }
 
-    watch(listener) {
-        this.listeners.push(listener);
-    }
-
     startWatch() {
         let that = this;
         this.ws = new WebSocket(watchUrl);
