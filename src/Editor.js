@@ -6,7 +6,7 @@ export default class Editor extends Component {
     constructor(props) {
         super(props);
         this.svg = null;
-        this.boxes = {}
+        this.boxes = []
     }
 
     componentDidMount() {
@@ -47,13 +47,11 @@ export default class Editor extends Component {
 
         const links = [];
 
-        this.svg = d3.select(".Editor").append("svg")
-                     .attr("width", 1400).attr("height", 600);
+        this.svg = d3.select(".Editor").append("svg").attr("width", 1400).attr("height", 600);
 
+        this.drawBox(components[0].children[0].space, components[0].children[0].surface);
         this.drawBox(components[0].space, components[0].surface);
         this.drawBox(components[1].space, components[1].surface);
-        this.drawBox(components[0].children[0].space, components[0].children[0].surface);
-
         this.updateChart();
     }
 
@@ -105,10 +103,10 @@ export default class Editor extends Component {
 
         let id;
         do {
-            id = Math.floor(Math.random() * 1000000)
-        } while(this.boxes[id]);
+            id = Math.floor(Math.random() * 1000000);
+        } while(this.boxes.some(b => b.id === id));
 
-        this.boxes[id] = {id: id, surface: surface, faces: parallelograms};
+        this.boxes.push({id: id, surface: surface, faces: parallelograms});
     }
 
     updateChart() {
