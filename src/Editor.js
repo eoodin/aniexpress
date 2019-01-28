@@ -6,6 +6,7 @@ export default class Editor extends Component {
     constructor(props) {
         super(props);
         this.svg = null;
+        this.boxes = {}
     }
 
     componentDidMount() {
@@ -25,7 +26,8 @@ export default class Editor extends Component {
                 children: [
                     {
                         name: "VI",
-                        space: {from: {x: 0, y: 0, z: 0}, to: {x: 200, y: 80, z: 200}},
+                        space: {from: {x: 5, y: 5, z: 5}, to: {x: 195, y: 75, z: 195}},
+                        surface: {color: '#118822', opacity: 1.0},
                         children: [
                             {
                                 name: "Disk",
@@ -37,7 +39,7 @@ export default class Editor extends Component {
             },
             {
                 name: "Backup Cloud",
-                space: {from: {x: 200, y: 0, z: 0}, to: {x: 400, y: 240, z: 200}},
+                space: {from: {x: 240, y: 0, z: 0}, to: {x: 440, y: 240, z: 200}},
                 surface: {color: '#1133AA', opacity: 0.2},
                 children: []
             }
@@ -50,6 +52,9 @@ export default class Editor extends Component {
 
         this.drawBox(components[0].space, components[0].surface);
         this.drawBox(components[1].space, components[1].surface);
+        this.drawBox(components[0].children[0].space, components[0].children[0].surface);
+
+        this.updateChart();
     }
 
     render() {
@@ -57,7 +62,6 @@ export default class Editor extends Component {
     }
 
     drawBox(space, surface) {
-        const origin = {x: 400, y: 300};
         const v = {x: -0.5, y: -0.2};
         let {from, to} = space;
         let parallelograms = [
@@ -96,18 +100,31 @@ export default class Editor extends Component {
                 {x: to.x + from.z * v.x, y: to.y + from.z * v.y},
                 {x: to.x + to.z * v.x, y: to.y + to.z * v.y},
                 {x: from.x + to.z * v.x, y: to.y + to.z * v.y}
-            ],
+            ]
         ];
 
+        let id;
+        do {
+            id = Math.floor(Math.random() * 1000000)
+        } while(this.boxes[id]);
+
+        this.boxes[id] = {id: id, surface: surface, faces: parallelograms};
+    }
+
+    updateChart() {
+        const origin = {x: 400, y: 400};
         // reverse for to bottom up
-        parallelograms = parallelograms.map(pl => pl.map(p => ({x: p.x, y: (p.y * -1)})));
-        this.svg.selectAll("polygon.p" + Math.floor(Math.random() * 10000))
-            .data(parallelograms)
-            .enter()
-            .append("polygon")
-            .attr("points", d => d.map(p => (p.x + origin.x) + ',' + (p.y + origin.y)).join(' '))
-            .attr("fill", surface.color)
-            .attr("stroke", 'darkgray')
-            .attr("fill-opacity", surface.opacity);
+        for (let id in this.boxes) {
+            let b = this.boxes[id];
+            let parallelograms = b.faces.map(pl => pl.map(p => ({x: p.x, y: (p.y * -1)})));
+            this.svg.selectAll("polygon.p" + b.id)
+                .data(parallelograms)
+                .enter()
+                .append("polygon")
+                .attr("points", d => d.map(p => (p.x + origin.x) + ',' + (p.y + origin.y)).join(' '))
+                .attr("fill", b.surface.color)
+                .attr("stroke", 'darkgray')
+                .attr("fill-opacity", b.surface.opacity);
+        }
     }
 }
